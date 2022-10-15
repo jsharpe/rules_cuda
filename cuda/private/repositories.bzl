@@ -187,7 +187,6 @@ local_cuda = repository_rule(
     configure = True,
     local = True,
     environ = ["CUDA_PATH", "PATH", "CUDA_CLANG_PATH", "BAZEL_LLVM"],
-    # remotable = True,
 )
 
 def rules_cuda_dependencies():

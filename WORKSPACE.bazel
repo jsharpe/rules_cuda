@@ -5,11 +5,17 @@ local_repository(
     path = "examples",
 )
 
-load("//cuda:repositories.bzl", "register_detected_cuda_toolchains", "rules_cuda_dependencies")
+load("//cuda:repositories.bzl", "register_cuda_toolchains", "register_detected_cuda_toolchains", "rules_cuda_dependencies")
 
 rules_cuda_dependencies()
 
+register_cuda_toolchains()
+
 register_detected_cuda_toolchains()
+
+load("@remote_cuda_toolchain//:repositories.bzl", "cuda_remote_repos")
+
+cuda_remote_repos()
 
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 

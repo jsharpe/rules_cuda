@@ -7,6 +7,9 @@ build --flag_alias=cuda_runtime=//cuda:runtime
 
 build --enable_cuda=True
 
+# TODO: remove this and put this into the toolchain
+build --cuda_copts="-Iexternal/cuda_cudart-linux-x86_64/include"
+
 # Use --config=clang to build with clang instead of gcc and nvcc.
 build:clang --repo_env=CC=clang
 build:clang --//cuda:compiler=clang

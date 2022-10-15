@@ -80,5 +80,5 @@ string_list_flag(
 # Example usage: --@rules_cuda//cuda:runtime=@local_cuda//:cuda_runtime_static
 label_flag(
     name = "runtime",
-    build_setting_default = "@local_cuda//:cuda_runtime",
+    build_setting_default = "@remote_cuda_toolchain//:cuda_runtime",
 )
