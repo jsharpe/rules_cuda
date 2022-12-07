@@ -70,16 +70,26 @@ def _cuda_library_impl(ctx):
         user_link_flags = common.host_link_flags,
         alwayslink = attr.alwayslink,
         linking_contexts = common.transitive_linking_contexts,
-        disallow_dynamic_library = True,
     )
 
-    lib = None
-    pic_lib = None
+    libs = []
+    pic_libs = []
     if linking_outputs.library_to_link != None:
-        lib = linking_outputs.library_to_link.static_library
-        pic_lib = linking_outputs.library_to_link.pic_static_library
-    libs = [] if lib == None else [lib]
-    pic_libs = [] if pic_lib == None else [pic_lib]
+        if linking_outputs.library_to_link.static_library != None:
+            libs = [linking_outputs.library_to_link.static_library]
+        pic_libs = [linking_outputs.library_to_link.pic_static_library, linking_outputs.library_to_link.dynamic_library]
+
+    cc_infos = [
+        CcInfo(
+            compilation_context = compilation_ctx,
+            linking_context = linking_ctx,
+        ),
+    ]
+
+    if hasattr(ctx.attr, "_builtin_deps"):
+        cc_infos.extend([dep[CcInfo] for dep in ctx.attr._builtin_deps if CcInfo in dep])
+
+    cc_info = cc_common.merge_cc_infos(cc_infos = cc_infos, direct_cc_infos = [dep[CcInfo] for dep in ctx.attr.deps if CcInfo in dep])
 
     return [
         DefaultInfo(files = depset(libs + pic_libs)),
@@ -90,8 +100,8 @@ def _cuda_library_impl(ctx):
             pic_objects = pic_objects,
         ),
         CcInfo(
-            compilation_context = compilation_ctx,
-            linking_context = linking_ctx,
+            compilation_context = cc_info.compilation_context,
+            linking_context = cc_info.linking_context,
         ),
         cuda_helper.create_cuda_info(defines = depset(common.defines)),
     ]

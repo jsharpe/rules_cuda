@@ -204,18 +204,21 @@ def _create_common(ctx):
     """
     attr = ctx.attr
 
+    all_ccdeps = [dep for dep in attr.deps if CcInfo in dep]
+    if hasattr(attr, "_builtin_deps"):
+        all_ccdeps.extend([dep for dep in attr._builtin_deps if CcInfo in dep])
+
+    cc_info = cc_common.merge_cc_infos(cc_infos = [dep[CcInfo] for dep in all_ccdeps])
+
     # gather include info
-    includes = []
+    includes = cc_info.compilation_context.includes.to_list()
     system_includes = []
     quote_includes = []
     quote_includes.extend(_resolve_workspace_root_includes(ctx))
     for inc in attr.includes:
         system_includes.extend(_resolve_includes(ctx, inc))
-    for dep in attr.deps:
-        if CcInfo in dep:
-            includes.extend(dep[CcInfo].compilation_context.includes.to_list())
-            system_includes.extend(dep[CcInfo].compilation_context.system_includes.to_list())
-            quote_includes.extend(dep[CcInfo].compilation_context.quote_includes.to_list())
+    system_includes.extend(cc_info.compilation_context.system_includes.to_list())
+    quote_includes.extend(cc_info.compilation_context.quote_includes.to_list())
 
     # gather header info
     public_headers = []
@@ -226,18 +229,10 @@ def _create_common(ctx):
         hdr = [f for f in fs.files.to_list() if _check_src_extension(f, ALLOW_CUDA_HDRS)]
         private_headers.extend(hdr)
     headers = public_headers + private_headers
-    transitive_headers = []
-    for dep in attr.deps:
-        if CcInfo in dep:
-            transitive_headers.append(dep[CcInfo].compilation_context.headers)
+    transitive_headers = [cc_info.compilation_context.headers]
 
     # gather linker info
-    builtin_linking_contexts = []
-    if hasattr(attr, "_builtin_deps"):
-        builtin_linking_contexts = [dep[CcInfo].linking_context for dep in attr._builtin_deps if CcInfo in dep]
-
-    transitive_linking_contexts = [dep[CcInfo].linking_context for dep in attr.deps if CcInfo in dep]
-    transitive_linking_contexts.extend(builtin_linking_contexts)
+    transitive_linking_contexts = [cc_info.linking_context]
 
     # gather compile info
     defines = []
@@ -255,8 +250,7 @@ def _create_common(ctx):
     for dep in attr.deps:
         if CudaInfo in dep:
             defines.extend(dep[CudaInfo].defines.to_list())
-        if CcInfo in dep:
-            host_defines.extend(dep[CcInfo].compilation_context.defines.to_list())
+    host_defines.extend(cc_info.compilation_context.defines.to_list())
     defines.extend(attr.defines)
     host_defines.extend(attr.host_defines)
 
