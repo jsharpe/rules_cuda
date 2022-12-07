@@ -13,6 +13,7 @@ exports_files(
         "lib/libcublasLt.so",
         "lib/libcublas.so",
         "lib/libcudadevrt.a",
+        "lib/stubs/libcuda.so",
     ],
     visibility = ["//visibility:public"],
 )
