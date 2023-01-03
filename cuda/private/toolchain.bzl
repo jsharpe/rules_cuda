@@ -119,7 +119,7 @@ CUDA_VERSIONS_JSON = {
     "12.0.0": "//cuda:redistrib/redistrib_12.0.0.json",
 }
 
-def register_cuda_toolchains(name = "remote_cuda_toolchain", version = "12.0.0", cuda_versions = CUDA_VERSIONS_JSON):
+def register_cuda_toolchains(name = "remote_cuda_toolchain", version = "11.8.0", cuda_versions = CUDA_VERSIONS_JSON):
     _remote_cuda(name = name, json_path = cuda_versions[version])
 
     native.register_toolchains(
