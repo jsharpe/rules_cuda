@@ -5,4 +5,4 @@ load("//cuda/private:repositories.bzl", "local_cuda")
 def _init(module_ctx):
     local_cuda(name = "local_cuda")
 
-ext = module_extension(implementation = _init)
+local_toolchain = module_extension(implementation = _init)
