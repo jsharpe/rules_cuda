@@ -17,7 +17,7 @@ def _cuda_toolchain_impl(ctx):
         platform_common.ToolchainInfo(
             name = ctx.label.name,
             compiler_executable = ctx.attr.compiler_executable,
-            all_files = ctx.attr.compiler_files.files,
+            all_files = ctx.attr.compiler_files.files if ctx.attr.compiler_files else depset(),
             selectables_info = selectables_info,
             artifact_name_patterns = artifact_name_patterns,
             cuda_toolkit = cuda_toolchain_config.cuda_toolkit,
