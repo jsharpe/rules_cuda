@@ -93,6 +93,8 @@ def _cuda_library_impl(ctx):
 
     cc_info = cc_common.merge_cc_infos(direct_cc_infos = [CcInfo(compilation_context = compilation_ctx, linking_context = linking_ctx)], cc_infos = [common.transitive_cc_info])
 
+    cc_info = cc_common.merge_cc_infos(direct_cc_infos = [CcInfo(compilation_context = compilation_ctx, linking_context = linking_ctx)], cc_infos = [common.transitive_cc_info])
+
     return [
         DefaultInfo(files = depset(libs + pic_libs)),
         OutputGroupInfo(
