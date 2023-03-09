@@ -44,5 +44,6 @@ cc_library(
         allow_empty = True,
     ),
     includes = ["include"],
+    deps = ["@libcudacxx"],
     visibility = ["//visibility:public"],
 )
