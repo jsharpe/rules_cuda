@@ -121,12 +121,13 @@ CUDA_VERSIONS_JSON = {
     "12.1.0": "//cuda:redistrib/redistrib_12.1.0.json",
 }
 
-def register_cuda_toolchains(name = "remote_cuda_toolchain", version = "12.0.0", cuda_versions = CUDA_VERSIONS_JSON):
+def register_cuda_toolchains(name = "remote_cuda_toolchain", version = "12.0.0", cuda_versions = CUDA_VERSIONS_JSON, register_toolchains = True):
     _remote_cuda(name = name, json_path = cuda_versions[version])
 
-    native.register_toolchains(
-        "@%s//toolchain:nvcc-local-toolchain" % name,
-    )
+    if register_toolchains:
+        native.register_toolchains(
+            "@%s//toolchain:nvcc-local-toolchain" % name,
+        )
 
 # buildifier: disable=unnamed-macro
 def register_detected_cuda_toolchains():
