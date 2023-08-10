@@ -10,7 +10,7 @@ load(
 cuda_toolkit(
     name = "cuda-toolkit",
     bin2c = "%{bin2c_label}",
-    fatbinary = "%{bin2c_label}",
+    fatbinary = "%{fatbinary_label}",
     link_stub = "%{link_stub_label}",
     nvlink = "%{nvlink_label}",
     path = "%{cuda_path}",
@@ -21,8 +21,9 @@ cuda_toolchain_config(
     name = "nvcc-local-config",
     cuda_toolkit = ":cuda-toolkit",
     msvc_env_tmp = "%{env_tmp}",
-    nvcc_version_major = %{nvcc_version_major},
-    nvcc_version_minor = %{nvcc_version_minor},
+    # int("%{foo}") instead of %{foo} to make the file valid syntactically.
+    nvcc_version_major = int("%{nvcc_version_major}"),
+    nvcc_version_minor = int("%{nvcc_version_minor}"),
     toolchain_identifier = "nvcc",
 )
 

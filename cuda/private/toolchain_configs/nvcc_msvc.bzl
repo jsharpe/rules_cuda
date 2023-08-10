@@ -343,7 +343,7 @@ def _impl(ctx):
         flag_sets = [
             flag_set(
                 actions = [ACTION_NAMES.cuda_compile],
-                flag_groups = [flag_group(flags = ["-Xcompiler", "/Od", "-Xcompiler", "/Z7"])],
+                flag_groups = [flag_group(flags = ["-O0", "-Xcompiler", "/Z7"])],
             ),
         ],
         implies = ["generate_pdb_file"],
@@ -355,7 +355,12 @@ def _impl(ctx):
         flag_sets = [
             flag_set(
                 actions = [ACTION_NAMES.cuda_compile],
-                flag_groups = [flag_group(flags = ["-DNDEBUG", "-Xcompiler", "/O2"])],
+                flag_groups = [flag_group(flags = [
+                    "-O2",
+                    "--dopt",  # the default depends on the value of --device-debug (-G), so set it explicitly.
+                    "on",
+                    "-DNDEBUG",
+                ])],
             ),
         ],
         implies = ["frame_pointer"],
@@ -367,7 +372,7 @@ def _impl(ctx):
         flag_sets = [
             flag_set(
                 actions = [ACTION_NAMES.cuda_compile],
-                flag_groups = [flag_group(flags = ["-Xcompiler", "/Od", "-Xcompiler", "/Z7"])],
+                flag_groups = [flag_group(flags = ["-O0", "-Xcompiler", "/Z7"])],
             ),
         ],
         implies = ["generate_pdb_file"],
@@ -499,6 +504,16 @@ def _impl(ctx):
         ],
     )
 
+    cuda_device_debug_feature = feature(
+        name = "cuda_device_debug",
+        flag_sets = [
+            flag_set(
+                actions = [ACTION_NAMES.cuda_compile],
+                flag_groups = [flag_group(flags = ["--device-debug"])],
+            ),
+        ],
+    )
+
     action_configs = [
         cuda_compile_action,
         cuda_device_link_action,
@@ -531,6 +546,7 @@ def _impl(ctx):
         nvcc_allow_unsupported_compiler_feature,
         nvcc_extended_lambda_feature,
         nvcc_relaxed_constexpr_feature,
+        cuda_device_debug_feature,
     ]
 
     return [CudaToolchainConfigInfo(
