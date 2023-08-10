@@ -1,3 +1,5 @@
+load("@rules_cuda//cuda:defs.bzl", "cc_import_versioned_sos")
+
 exports_files(
     [
         "bin/nvcc",
@@ -18,10 +20,25 @@ exports_files(
     visibility = ["//visibility:public"],
 )
 
+cc_import_versioned_sos(
+    name = "cublas_so",
+    shared_library = "lib/libcublas.so",
+    visibility = ["//visibility:public"],
+)
+
+cc_import_versioned_sos(
+    name = "cublasLt_so",
+    shared_library = "lib/libcublasLt.so",
+    visibility = ["//visibility:public"],
+)
+
 filegroup(
     name = "includes",
     srcs = glob(
-        ["include/**", "nvvm/include/**"],
+        [
+            "include/**",
+            "nvvm/include/**",
+        ],
         allow_empty = True,
     ),
     visibility = ["//visibility:public"],
@@ -30,9 +47,9 @@ filegroup(
 filegroup(
     name = "nvvm",
     srcs = glob(
-       ["nvvm/**"],
-       exclude = ["nvvm/libnvvm-samples"],
-       allow_empty = True,
+        ["nvvm/**"],
+        allow_empty = True,
+        exclude = ["nvvm/libnvvm-samples"],
     ),
     visibility = ["//visibility:public"],
 )
@@ -40,10 +57,13 @@ filegroup(
 cc_library(
     name = "hdrs",
     hdrs = glob(
-        ["include/**", "nvvm/include/**"],
+        [
+            "include/**",
+            "nvvm/include/**",
+        ],
         allow_empty = True,
     ),
     includes = ["include"],
-    deps = ["@libcudacxx"],
     visibility = ["//visibility:public"],
+    deps = ["@libcudacxx"],
 )

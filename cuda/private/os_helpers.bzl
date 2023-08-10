@@ -12,7 +12,7 @@ def if_windows(if_true, if_false = []):
         "//conditions:default": if_false,
     })
 
-def cc_import_versioned_sos(name, shared_library):
+def cc_import_versioned_sos(name, shared_library, visibility = None):
     """Creates a cc_library that depends on all versioned .so files with the given prefix.
 
     If <shared_library> is path/to/foo.so, and it is a symlink to foo.so.<version>,
@@ -34,4 +34,5 @@ def cc_import_versioned_sos(name, shared_library):
     native.cc_library(
         name = name,
         deps = [":%s" % paths.basename(p) for p in so_paths],
+        visibility = visibility,
     )

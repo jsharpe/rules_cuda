@@ -1,3 +1,5 @@
+load("@rules_cuda//cuda:defs.bzl", "cc_import_versioned_sos")
+
 package(
     default_visibility = ["//visibility:public"],
 )
@@ -5,8 +7,8 @@ package(
 cc_library(
     name = "cuda_headers",
     deps = [
-	"@cuda_cudart-linux-x86_64//:hdrs",
-	"@cuda_nvcc-linux-x86_64//:hdrs",
+        "@cuda_cudart-linux-x86_64//:hdrs",
+        "@cuda_nvcc-linux-x86_64//:hdrs",
     ],
 )
 
@@ -22,7 +24,7 @@ cc_library(
 
 cc_library(
     name = "cudart_so",
-    srcs = ["@cuda_cudart-linux-x86_64//:lib/libcudart.so",],
+    srcs = ["@cuda_cudart-linux-x86_64//:lib/libcudart.so"],
     target_compatible_with = ["@platforms//os:linux"],
     alwayslink = 1,
 )
@@ -55,7 +57,6 @@ cc_library(
         "-lpthread",
         "-lrt",
     ],
-    alwayslink = 1,
     deps = [
         "@cuda_cudart-linux-x86_64//:hdrs",
         "@cuda_nvcc-linux-x86_64//:hdrs",
@@ -64,6 +65,7 @@ cc_library(
         ":cudadevrt_a",
         ":cudart_so",
     ],
+    alwayslink = 1,
 )
 
 # Note: do not use this target directly, use the configurable label_flag
@@ -76,7 +78,10 @@ cc_library(
         "-lpthread",
         "-lrt",
     ],
-    deps = [":cuda_headers", ":cudadevrt_a"],
+    deps = [
+        ":cuda_headers",
+        ":cudadevrt_a",
+    ],
 )
 
 cc_library(
@@ -105,18 +110,6 @@ cc_library(
 )
 
 cc_import(
-    name = "cublas_so",
-    shared_library = "@libcublas-linux-x86_64//:lib/libcublas.so",
-    target_compatible_with = ["@platforms//os:linux"],
-)
-
-cc_import(
-    name = "cublasLt_so",
-    shared_library = "@libcublas-linux-x86_64//:lib/libcublasLt.so",
-    target_compatible_with = ["@platforms//os:linux"],
-)
-
-cc_import(
     name = "cublas_lib",
     interface_library = "cuda/lib/x64/cublas.lib",
     target_compatible_with = ["@platforms//os:windows"],
@@ -134,8 +127,8 @@ cc_library(
         ":cuda_runtime",
         "@libcublas-linux-x86_64//:hdrs",
     ] + [
-        ":cublasLt_so",
-        ":cublas_so",
+        "@libcublas-linux-x86_64//:cublasLt_so",
+        "@libcublas-linux-x86_64//:cublas_so",
     ],
 )
 
@@ -279,10 +272,9 @@ cc_library(
         "cuda/include",
     ],
     visibility = ["//visibility:public"],
-    deps = [] +
-    [
-        ":nvptxcompiler_so"
-    ]
+    deps = [] + [
+        ":nvptxcompiler_so",
+    ],
 )
 
 # cufft
@@ -316,7 +308,7 @@ cc_library(
         ":cuda_headers",
     ] + [
         ":cufft_so",
-        ":cufftw_so"
+        ":cufftw_so",
     ],
 )
 
