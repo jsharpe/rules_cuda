@@ -126,7 +126,7 @@ def register_cuda_toolchains(name = "remote_cuda_toolchain", version = "12.0.0",
 
     if register_toolchains:
         native.register_toolchains(
-            "@%s//toolchain:nvcc-local-toolchain" % name,
+            "@%s//toolchain:nvcc-remote-toolchain" % name,
         )
 
 # buildifier: disable=unnamed-macro
