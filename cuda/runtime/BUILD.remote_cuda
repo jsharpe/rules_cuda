@@ -63,7 +63,7 @@ cc_library(
     ] + [
         # devrt is require for jit linking when rdc is enabled
         ":cudadevrt_a",
-        ":cudart_so",
+        "@cuda_cudart-linux-x86_64//:cudart_so",
     ],
     alwayslink = 1,
 )

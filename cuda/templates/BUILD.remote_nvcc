@@ -21,6 +21,12 @@ exports_files(
 )
 
 cc_import_versioned_sos(
+    name = "cudart_so",
+    shared_library = "lib/libcudart.so",
+    visibility = ["//visibility:public"],
+)
+
+cc_import_versioned_sos(
     name = "cublas_so",
     shared_library = "lib/libcublas.so",
     visibility = ["//visibility:public"],
