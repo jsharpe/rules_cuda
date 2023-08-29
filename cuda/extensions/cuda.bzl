@@ -13,13 +13,29 @@ cuda_toolkit = tag_class(attrs = {
 })
 
 def _toolchain_repo_impl(rctx):
-    rctx.file("BUILD.bazel", executable = False)
+    toolchain_targets = "\n".join(["""
+toolchain(
+    name = "nvcc-remote-toolchain-{0}",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+    ],
+    toolchain = "@{0}//toolchain:nvcc-remote",
+    toolchain_type = "@rules_cuda//cuda:toolchain_type",
+    visibility = ["//visibility:public"],
+)
+""".format(name) for name in rctx.attr.repo_names])
+
+    rctx.file("BUILD.bazel", content = toolchain_targets, executable = False)
     load_statements = "\n".join(["load(\"@{0}//:repositories.bzl\", {0}_cuda_remote_repos=\"cuda_remote_repos\")".format(name) for name in rctx.attr.repo_names])
     cmds = "\n    ".join(["{0}_cuda_remote_repos()".format(name) for name in rctx.attr.repo_names])
     repo_content = """\
 {0}
 
-def cuda_repos():\
+def cuda_repos():
 
     {1}
 """.format(load_statements, cmds)

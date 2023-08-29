@@ -12,3 +12,4 @@ use_repo(toolchain, "cuda_toolchains")
 
 toolchains = use_extension("@rules_cuda//cuda:extensions/toolchains.bzl", "toolchains")
 
+register_toolchains("@cuda_toolchains//:all")

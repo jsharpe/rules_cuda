@@ -18,7 +18,7 @@ cuda_toolkit(
 )
 
 cuda_toolchain_config(
-    name = "nvcc-local-config",
+    name = "nvcc-remote-config",
     cuda_toolkit = ":cuda-toolkit",
     nvcc_version_major = 11,
     nvcc_version_minor = 7,
@@ -31,33 +31,35 @@ filegroup(
         "@cuda_cudart-linux-x86_64//:includes",
         "@cuda_nvcc-linux-x86_64//:bin/bin2c",
         "@cuda_nvcc-linux-x86_64//:bin/crt/link.stub",
+        "@cuda_nvcc-linux-x86_64//:bin/cudafe++",
+        "@cuda_nvcc-linux-x86_64//:bin/fatbinary",
         "@cuda_nvcc-linux-x86_64//:bin/nvcc",
         "@cuda_nvcc-linux-x86_64//:bin/nvcc.profile",
         "@cuda_nvcc-linux-x86_64//:bin/nvlink",
         "@cuda_nvcc-linux-x86_64//:bin/ptxas",
-        "@cuda_nvcc-linux-x86_64//:bin/fatbinary",
-        "@cuda_nvcc-linux-x86_64//:bin/cudafe++",
         "@cuda_nvcc-linux-x86_64//:includes",
         "@cuda_nvcc-linux-x86_64//:nvvm",
     ],
 )
 
 cuda_toolchain(
-    name = "nvcc-local",
+    name = "nvcc-remote",
     compiler_executable = "external/cuda_nvcc-linux-x86_64/bin/nvcc",
     compiler_files = ":nvcc-compiler-files",
-    toolchain_config = ":nvcc-local-config",
+    toolchain_config = ":nvcc-remote-config",
+    visibility = ["//visibility:public"],
 )
 
 toolchain(
-    name = "nvcc-local-toolchain",
+    name = "nvcc-remote-toolchain",
     exec_compatible_with = [
         "@platforms//os:linux",
+        "@platforms//arch:x86_64",
     ],
     target_compatible_with = [
         "@platforms//os:linux",
     ],
-    toolchain = ":nvcc-local",
+    toolchain = ":nvcc-remote",
     toolchain_type = "@rules_cuda//cuda:toolchain_type",
     visibility = ["//visibility:public"],
 )
