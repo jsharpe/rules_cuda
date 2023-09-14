@@ -1,7 +1,8 @@
 """Entry point for extensions used by bzlmod."""
 
 load("//cuda/private:repositories.bzl", "local_cuda")
-load("//cuda/private:toolchain.bzl", "register_cuda_toolchains")
+load("//cuda/private:toolchain.bzl", "CUDA_VERSIONS_JSON", "register_cuda_toolchains")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 remote_cuda_toolkit = tag_class(attrs = {
     "toolkit_version": attr.string(doc = "Path to the CUDA SDK"),
@@ -48,6 +49,26 @@ _toolchain_repo = repository_rule(
     },
 )
 
+def _remote_toolchain_impl(module_ctx, *, cuda_version):
+    redist = module_ctx.read(Label(CUDA_VERSIONS_JSON[cuda_version]))
+    repos = json.decode(redist)
+    repos_to_define = dict()
+    base_url = "https://developer.download.nvidia.com/compute/cuda/redist/"
+
+    for key in repos:
+        if key == "release_date":
+            continue
+        for arch in repos[key]:
+            if arch == "name" or arch == "license" or arch == "version":
+                continue
+            http_archive(
+                name = "{}-{}".format(key, arch),
+                sha256 = repos[key][arch]["sha256"],
+                build_file = "@rules_cuda//cuda:templates/BUILD.remote_nvcc",
+                urls = [base_url + repos[key][arch]["relative_path"]],
+                strip_prefix = repos[key][arch]["relative_path"].split("/")[-1][:-7],
+            )
+
 def _init(module_ctx):
     registrations = {}
     remote_toolchain_repos = []
@@ -64,6 +85,7 @@ def _init(module_ctx):
                 registrations[toolchain.name] = toolchain.toolkit_path
         for toolchain in mod.tags.remote_toolchain:
             remote_toolchain_repos += ["remote_cuda_toolchain"]
+            _remote_toolchain_impl(module_ctx, cuda_version = toolchain.toolkit_version)
             register_cuda_toolchains(version = toolchain.toolkit_version, register_toolchains = False)
     for name, toolkit_path in registrations.items():
         local_cuda(name = name, toolkit_path = toolkit_path)
