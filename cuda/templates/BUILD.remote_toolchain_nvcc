@@ -44,7 +44,7 @@ filegroup(
 
 cuda_toolchain(
     name = "nvcc-remote",
-    compiler_executable = "external/cuda_nvcc-linux-x86_64/bin/nvcc",
+    compiler_executable = "external/rules_cuda~override~toolchain~cuda_nvcc-linux-x86_64/bin/nvcc",
     compiler_files = ":nvcc-compiler-files",
     toolchain_config = ":nvcc-remote-config",
     visibility = ["//visibility:public"],
