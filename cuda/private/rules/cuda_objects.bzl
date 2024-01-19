@@ -19,10 +19,20 @@ def _cuda_objects_impl(ctx):
     for src in ctx.attr.srcs:
         src_files.extend(src[DefaultInfo].files.to_list())
 
-    # outputs
+    # merge deps' direct objects and archive objects as our archive objects
+    archive_objects = depset(transitive = [dep[CudaInfo].objects for dep in attr.deps if CudaInfo in dep] +
+                                          [dep[CudaInfo].archive_objects for dep in attr.deps if CudaInfo in dep])
+    archive_pic_objects = depset(transitive = [dep[CudaInfo].pic_objects for dep in attr.deps if CudaInfo in dep] +
+                                              [dep[CudaInfo].archive_pic_objects for dep in attr.deps if CudaInfo in dep])
+    archive_rdc_objects = depset(transitive = [dep[CudaInfo].rdc_objects for dep in attr.deps if CudaInfo in dep] +
+                                              [dep[CudaInfo].archive_rdc_objects for dep in attr.deps if CudaInfo in dep])
+    archive_rdc_pic_objects = depset(transitive = [dep[CudaInfo].rdc_pic_objects for dep in attr.deps if CudaInfo in dep] +
+                                                  [dep[CudaInfo].archive_rdc_pic_objects for dep in attr.deps if CudaInfo in dep])
+
+    # direct outputs
     objects = depset(compile(ctx, cuda_toolchain, cc_toolchain, src_files, common, pic = False, rdc = False))
-    rdc_objects = depset(compile(ctx, cuda_toolchain, cc_toolchain, src_files, common, pic = False, rdc = True))
     pic_objects = depset(compile(ctx, cuda_toolchain, cc_toolchain, src_files, common, pic = True, rdc = False))
+    rdc_objects = depset(compile(ctx, cuda_toolchain, cc_toolchain, src_files, common, pic = False, rdc = True))
     rdc_pic_objects = depset(compile(ctx, cuda_toolchain, cc_toolchain, src_files, common, pic = True, rdc = True))
 
     compilation_ctx = cc_common.create_compilation_context(
@@ -32,6 +42,11 @@ def _cuda_objects_impl(ctx):
         quote_includes = depset(common.quote_includes),
         defines = depset(common.host_defines),
         local_defines = depset(common.host_local_defines),
+    )
+
+    cc_info = cc_common.merge_cc_infos(
+        direct_cc_infos = [CcInfo(compilation_context = compilation_ctx)],
+        cc_infos = [common.transitive_cc_info],
     )
 
     return [
@@ -55,7 +70,8 @@ def _cuda_objects_impl(ctx):
             rdc_pic_objects = rdc_pic_objects,
         ),
         CcInfo(
-            compilation_context = compilation_ctx,
+            compilation_context = cc_info.compilation_context,
+            linking_context = cc_info.linking_context,
         ),
         cuda_helper.create_cuda_info(
             defines = depset(common.defines),
@@ -63,6 +79,10 @@ def _cuda_objects_impl(ctx):
             pic_objects = pic_objects,
             rdc_objects = rdc_objects,
             rdc_pic_objects = rdc_pic_objects,
+            archive_objects = archive_objects,
+            archive_pic_objects = archive_pic_objects,
+            archive_rdc_objects = archive_rdc_objects,
+            archive_rdc_pic_objects = archive_rdc_pic_objects,
         ),
     ]
 
@@ -91,4 +111,5 @@ code and device link time optimization source files.""",
     },
     fragments = ["cpp"],
     toolchains = use_cpp_toolchain() + use_cuda_toolchain(),
+    provides = [DefaultInfo, OutputGroupInfo, CcInfo, CudaInfo],
 )

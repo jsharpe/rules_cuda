@@ -1,7 +1,6 @@
 module(
     name = "rules_cuda",
     compatibility_level = 1,
-    version = "0.0.0",
 )
 
 bazel_dep(name = "bazel_skylib", version = "1.4.2")
@@ -16,4 +15,3 @@ use_repo(toolchain, "cuda_toolchains", "remote_cuda_toolchain")
 toolchains = use_extension("@rules_cuda//cuda:extensions/toolchains.bzl", "toolchains")
 
 register_toolchains("@cuda_toolchains//:all")
-
