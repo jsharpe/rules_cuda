@@ -89,7 +89,7 @@ def compile(
         args.add_all(cmd)
 
         actions.run(
-            executable = cuda_compiler,
+            executable = cuda_compiler.files.to_list()[0],
             arguments = [args],
             outputs = [obj_file],
             inputs = depset([src], transitive = [common.headers, cc_toolchain.all_files, cuda_toolchain.all_files]),

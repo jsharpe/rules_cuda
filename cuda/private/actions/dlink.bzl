@@ -81,7 +81,7 @@ def _compiler_device_link(
     args.add_all(objects)
 
     actions.run(
-        executable = cuda_compiler,
+        executable = cuda_compiler.files.to_list()[0],
         arguments = [args],
         outputs = [obj_file],
         inputs = depset(transitive = [objects, cc_toolchain.all_files, cuda_toolchain.all_files]),

@@ -33,7 +33,7 @@ cuda_toolchain = rule(
             providers = [CudaToolchainConfigInfo],
             doc = "A target that provides a `CudaToolchainConfigInfo`.",
         ),
-        "compiler_executable": attr.string(mandatory = True, doc = "The path of the main executable of this toolchain."),
+        "compiler_executable": attr.label(mandatory = True, cfg = "exec", allow_files = True, doc = "The path of the main executable of this toolchain."),
         "compiler_files": attr.label(allow_files = True, cfg = "exec", doc = "The set of files that are needed when compiling using this toolchain."),
         "_cc_toolchain": attr.label(default = "@bazel_tools//tools/cpp:current_cc_toolchain"),
     },
