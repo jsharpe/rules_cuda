@@ -25,17 +25,11 @@ jobs:
           ref: ${{ matrix.docs.ref }}
         if: ${{ matrix.docs.ref != 'main' }}
 
-      - uses: bazelbuild/setup-bazelisk@v2
-      - name: Mount bazel cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/bazel
-          key: bazel-gen-docs-${{ matrix.docs.ref }}
+      - uses: bazelbuild/setup-bazelisk@v3
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-          cache: pip
 
       - name: Generate docs
         run: bash ./build-docs.sh

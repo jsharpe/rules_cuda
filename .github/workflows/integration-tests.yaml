@@ -30,10 +30,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: bazelbuild/setup-bazelisk@v2
+      - uses: bazelbuild/setup-bazelisk@v3
       - name: Mount bazel cache
         if: ${{ !startsWith(matrix.cases.os, 'windows') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/bazel
           key: ${{ matrix.cases.toolchain }}-${{ matrix.cases.toolchain-version }}
@@ -103,10 +103,10 @@ jobs:
         with:
           ref: ${{ steps.comment-branch.outputs.head_ref }}
 
-      - uses: bazelbuild/setup-bazelisk@v2
+      - uses: bazelbuild/setup-bazelisk@v3
       - name: Mount bazel cache
         if: ${{ !startsWith(matrix.cases.os, 'windows') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/bazel
           key: ${{ matrix.cases.toolchain }}-${{ matrix.cases.toolchain-version }}
