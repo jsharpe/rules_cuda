@@ -59,7 +59,7 @@ def _remote_toolchain_impl(module_ctx, *, cuda_version):
         if key == "release_date":
             continue
         for arch in repos[key]:
-            if arch == "name" or arch == "license" or arch == "version":
+            if arch == "name" or arch == "license" or arch == "version" or arch == "license_path":
                 continue
             http_archive(
                 name = "{}-{}".format(key, arch),

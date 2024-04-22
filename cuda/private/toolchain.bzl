@@ -51,7 +51,7 @@ def _remote_cuda_impl(repository_ctx):
         if key == "release_date":
             continue
         for arch in repos[key]:
-            if arch == "name" or arch == "license" or arch == "version":
+            if arch == "name" or arch == "license" or arch == "version" or arch == "license_path":
                 continue
             repos_to_define[key + "-%s" % arch] = {
                 "repo_rule": "http_archive",
