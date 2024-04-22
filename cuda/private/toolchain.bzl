@@ -119,9 +119,18 @@ CUDA_VERSIONS_JSON = {
     "12.0.0": "//cuda:redistrib/redistrib_12.0.0.json",
     "12.0.1": "//cuda:redistrib/redistrib_12.0.1.json",
     "12.1.0": "//cuda:redistrib/redistrib_12.1.0.json",
+    "12.1.1": "//cuda:redistrib/redistrib_12.1.1.json",
+    "12.2.0": "//cuda:redistrib/redistrib_12.2.0.json",
+    "12.2.1": "//cuda:redistrib/redistrib_12.2.1.json",
+    "12.2.2": "//cuda:redistrib/redistrib_12.2.2.json",
+    "12.3.0": "//cuda:redistrib/redistrib_12.3.0.json",
+    "12.3.1": "//cuda:redistrib/redistrib_12.3.1.json",
+    "12.3.2": "//cuda:redistrib/redistrib_12.3.2.json",
+    "12.4.0": "//cuda:redistrib/redistrib_12.4.0.json",
+    "12.4.1": "//cuda:redistrib/redistrib_12.4.1.json",
 }
 
-def register_cuda_toolchains(name = "remote_cuda_toolchain", version = "12.0.0", cuda_versions = CUDA_VERSIONS_JSON, register_toolchains = True):
+def register_cuda_toolchains(name = "remote_cuda_toolchain", version = "12.4.1", cuda_versions = CUDA_VERSIONS_JSON, register_toolchains = True):
     _remote_cuda(name = name, json_path = cuda_versions[version])
 
     if register_toolchains:
