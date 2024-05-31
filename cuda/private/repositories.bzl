@@ -229,38 +229,11 @@ def rules_cuda_dependencies(toolkit_path = None):
     maybe(
         name = "platforms",
         repo_rule = http_archive,
-        sha256 = "379113459b0feaf6bfbb584a91874c065078aa673222846ac765f86661c27407",
         urls = [
-            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.5/platforms-0.0.5.tar.gz",
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.5/platforms-0.0.5.tar.gz",
+            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
+            "https://github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
         ],
-    )
-
-    maybe(
-        name = "libcudacxx",
-        repo_rule = http_archive,
-        build_file = "@rules_cuda//third_party:libcu++.BUILD",
-        sha256 = "05b1435ad65f5bdef1bb8d1eb29dc8f0f7df34c01d77bf8686687a4603588bce",
-        strip_prefix = "libcudacxx-1.9.0",
-        urls = ["https://github.com/NVIDIA/libcudacxx/archive/refs/tags/1.9.0.tar.gz"],
-    )
-
-    maybe(
-        name = "thrust",
-        repo_rule = http_archive,
-        build_file = "@rules_cuda//third_party:thrust.BUILD",
-        sha256 = "d021e37f5aac30fd1b9737865399feb57db8e601ae2fc0af3cd41784435e9523",
-        strip_prefix = "thrust-1.17.2",
-        urls = ["https://github.com/NVIDIA/thrust/archive/refs/tags/1.17.2.tar.gz"],
-    )
-
-    maybe(
-        name = "cub",
-        repo_rule = http_archive,
-        build_file = "@rules_cuda//third_party:cub.BUILD",
-        sha256 = "1013a595794548c359f22c07e1f8c620b97e3a577f7e8496d9407f74566a3e2a",
-        strip_prefix = "cub-1.17.2",
-        urls = ["https://github.com/NVIDIA/cub/archive/refs/tags/1.17.2.tar.gz"],
+        sha256 = "218efe8ee736d26a3572663b374a253c012b716d8af0c07e842e82f238a0a7ee",
     )
 
     local_cuda(name = "local_cuda", toolkit_path = toolkit_path)
