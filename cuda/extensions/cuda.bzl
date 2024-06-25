@@ -56,7 +56,7 @@ def _remote_toolchain_impl(module_ctx, *, cuda_version):
     base_url = "https://developer.download.nvidia.com/compute/cuda/redist/"
 
     for key in repos:
-        if key == "release_date":
+        if key == "release_date" or key == "release_label" or key == "release_product":
             continue
         for arch in repos[key]:
             if arch == "name" or arch == "license" or arch == "version" or arch == "license_path":

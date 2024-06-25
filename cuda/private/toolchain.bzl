@@ -48,7 +48,7 @@ def _remote_cuda_impl(repository_ctx):
     base_url = repository_ctx.attr.base_url
 
     for key in repos:
-        if key == "release_date":
+        if key == "release_date" or key == "release_label" or key == "release_product":
             continue
         for arch in repos[key]:
             if arch == "name" or arch == "license" or arch == "version" or arch == "license_path":
