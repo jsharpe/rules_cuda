@@ -12,6 +12,4 @@ bazel_dep(name = "libcudacxx", version = "1.9.0")
 toolchain = use_extension("@rules_cuda//cuda:extensions/cuda.bzl", "toolchain")
 use_repo(toolchain, "cuda_toolchains", "remote_cuda_toolchain")
 
-toolchains = use_extension("@rules_cuda//cuda:extensions/toolchains.bzl", "toolchains")
-
 register_toolchains("@cuda_toolchains//:all")
